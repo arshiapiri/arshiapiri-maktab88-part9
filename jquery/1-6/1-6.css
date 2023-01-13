@@ -1,0 +1,30 @@
+* {
+    margin: 0;
+  }
+  
+  #navbar {
+    display: flex;
+    background-color: #55fa55;
+    border-bottom: 2px black solid;
+  }
+  .dropdown {
+    width: 33.33%;
+    height: 28px;
+  }
+  h4 {
+    margin: 5px 0;
+  }
+  .drop-content {
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    background-color: #9356e4;
+  }
+  a {
+    text-decoration: none;
+    color: black;
+  }
+  h4 {
+    cursor: pointer;
+  }
