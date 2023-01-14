@@ -3,11 +3,11 @@ const userProfileModalTitle = document.getElementById('userProfileModalTitle');
 const userProfileModalBody = document.getElementById('userProfileModalBody');
 const paginationContainer = document.getElementById('paginationContainer');
 
-
-const pageActive = 'page-link bg-dark border-dark text-white';
-const pageDeactive = 'page-link bg-primary border-dark text-white';
+const  pageDeactive= 'page-link bg-white border-dark text-dark';
+const pageActive = 'page-link bg-primary border-dark text-dark';
 
 let newUserData = userData;
+let selectedUser = null;
 
 const GenerateProfileInformation = ({id, email,avatar,firstname,lastname},showPara = false) => {
     return `
@@ -24,13 +24,13 @@ const GenerateProfileInformation = ({id, email,avatar,firstname,lastname},showPa
     `
     }
 
-const showModalInformation = ({ firstname,...params}) => {
-    const title = `${firstname} Profile`;
-    userProfileModalTitle.innerText = title;
-
-    const profileInfo = GenerateProfileInformation({firstname,...params },true);
-    userProfileModalBody.innerHTML = profileInfo;
-}
+      const showModalInformation = ({ firstname,...params}) => {
+        const title = `${firstname} Profile`;
+        userProfileModalTitle.innerText = title;
+    
+        const profileInfo = GenerateProfileInformation({firstname,...params },true);
+        userProfileModalBody.innerHTML = profileInfo;
+    }
 
 const cardGenerator = ({id, firstname, lastname, email, avatar}) => {
     return `            
@@ -54,63 +54,75 @@ const handelOnClickProfileBtn = (id) => {
     showModalInformation(targetUser);
 }
 
-
-const userListGenerator = (index) => {
-    let usersListBody = '';
+const usersListGenerator = (index, data) => {
+    let usersListBody = "";
+  
     for (let i = index; i < index + 6; i++) {
-        if(!userData[i]){
-            break;
-        }
-        usersListBody += cardGenerator(userData[i]);
+      if (!data[i]) {
+        break;
+      }
+      usersListBody += cardGenerator(data[i]);
     }
     return usersListBody;
-}
-
-const renderUsersList = (index) => {
-    userListContainer.innerHTML = userListGenerator(index);
-};
-
-renderUsersList(0)
-
-//pagination 
-
-const paginationGenerator = (data) => {
-    let paginationBody = '';
-    const pageCount = Math.ceil(data.length /6);
+  };
+  
+  const renderUsersList = (index, data) => {
+    userListContainer.innerHTML = usersListGenerator(index, data);
+  };
+  
+  renderUsersList(0, newUserData);
+  
+  /********************************************** */
+  /*********** Pagination Start *********** */
+  
+  // Generate Pagination
+  const paginationGenerator = (data) => {
+    let paginationBody = "";
+    const pageCount = Math.ceil(data.length / 6);
     let startIndex = 0;
     for (let i = 0; i < pageCount; i++) {
-        paginationBody += `
-        <li class="page-item">
-        <a 
-        class="page-link bg-dark border-dark text-white" 
-        hreft='#'
-        onClick = 'pageRender(${startIndex},this)'
-        >${i + 1} </a>
-        </li>`;
-        startIndex +=6;
+      paginationBody += `
+      <li class="page-item">
+        <a
+        class="page-link bg-white border-primary text-dark" 
+          href="#"
+          onclick="pageRender(${startIndex},this)"
+          >${i + 1}</a
+        >
+      </li>`;
+      startIndex += 6;
     }
     return paginationBody;
-};
-
-const renderPagination = (data) =>{
+  };
+  
+  // Render Pagination
+  const renderPagination = (data) => {
     paginationContainer.innerHTML = paginationGenerator(data);
-}
-renderPagination(userData);
-
-const pageRender = function(index , self){
-    let pageBtns = document.querySelectorAll('.page-link');
+    document.querySelectorAll(".page-link")[0].classList = pageActive;
+  };
+  
+  renderPagination(newUserData);
+  
+  // Render Page
+  
+  const pageRender = function (index, self) {
+    let pageBtns = document.querySelectorAll(".page-link");
     for (const btn of pageBtns) {
-        btn.className =  pageActive;
+      btn.className = pageDeactive;
     }
-    self.className = pageDeactive;
+    self.className = pageActive;
     renderUsersList(index, newUserData);
-}
-
-const filterUsers = function (self) {
-    const searchKey = self.value.toLowerCase();
+  };
+  
+  /***********************************
+   * Filter Users
+   */
+  
+  const filterUsers = function (self) {
+    const searchKey = self.value.toUpperCase();
     newUserData = userData.filter((item) => {
       for (const value of Object.values(item)) {
-        if (value.toString().toLowerCase().includes(searchKey)) {
+        if (value.toString().toUpperCase().indexOf(searchKey) > -1) {
           return true;
         }
       }
@@ -118,10 +130,6 @@ const filterUsers = function (self) {
     renderUsersList(0, newUserData);
     renderPagination(newUserData);
   };
-
-
-
-
 
 
 

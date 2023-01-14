@@ -9,6 +9,9 @@ $(() => {
           });
           $("#text").text(`${defaultProgress}%`);
         }
-      },
+        if(defaultProgress >= 100){
+          alert('you win');
+        }
+      }
     });
   });
